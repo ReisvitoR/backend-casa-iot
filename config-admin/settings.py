@@ -111,7 +111,7 @@ SECRET_KEY = 'django-insecure-ws47k7v^pv5c_=2p@42-8=ok+qk^+68kw4e#lmofiocju434-z
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['localhost', '127.0.0.1', 'backend-casa-iot.onrender.com', '*.onrender.com'])
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'backend-casa-iot.onrender.com', '*.onrender.com']
 
 
 # Application definition
