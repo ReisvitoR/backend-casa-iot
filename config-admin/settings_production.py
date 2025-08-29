@@ -12,12 +12,13 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     '0.0.0.0',
-    # Adicione aqui os domínios do seu deploy:
+    'backend-casa-iot.onrender.com',
+    '*.onrender.com',
+    # Adicione aqui outros domínios do seu deploy:
     # 'seudominio.com',
     # 'api.seudominio.com',
     # 'seu-app.herokuapp.com',
     # 'seu-app.railway.app',
-    # 'seu-app.render.com',
 ]
 
 # CORS para permitir frontend consumir a API

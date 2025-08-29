@@ -111,7 +111,13 @@ SECRET_KEY = 'django-insecure-ws47k7v^pv5c_=2p@42-8=ok+qk^+68kw4e#lmofiocju434-z
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']  # Temporário para debug - aceita todos os hosts
+ALLOWED_HOSTS = [
+    'localhost', 
+    '127.0.0.1', 
+    'backend-casa-iot.onrender.com',
+    '.onrender.com',  # Aceita qualquer subdomínio do onrender.com
+    '*'  # Temporário para debug
+]
 
 
 # Application definition
