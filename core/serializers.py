@@ -4,20 +4,14 @@ from .models import *
 
 class UsuarioSerializer(serializers.ModelSerializer):
     total_casas = serializers.SerializerMethodField()
-    total_dispositivos = serializers.SerializerMethodField()
     
     class Meta:
         model = Usuario
-        fields = ['id', 'email', 'first_name', 'last_name', 'total_casas', 'total_dispositivos', 'date_joined']
+        fields = ['id', 'email', 'first_name', 'last_name', 'total_casas', 'date_joined']
         read_only_fields = ['date_joined']
     
     def get_total_casas(self, obj):
         return obj.casas.count()
-    
-    def get_total_dispositivos(self, obj):
-        return sum(casa.comodos.all().aggregate(
-            total=models.Count('dispositivos')
-        )['total'] or 0 for casa in obj.casas.all())
 
 class TipoDispositivoSerializer(serializers.ModelSerializer):
     class Meta:
@@ -27,29 +21,18 @@ class TipoDispositivoSerializer(serializers.ModelSerializer):
 class CasaSerializer(serializers.ModelSerializer):
     total_comodos = serializers.SerializerMethodField()
     total_dispositivos = serializers.SerializerMethodField()
-    dispositivos_online = serializers.SerializerMethodField()
     usuario_nome = serializers.CharField(source='usuario.first_name', read_only=True)
     
     class Meta:
         model = Casa
-        fields = '__all__'
-        read_only_fields = ['created_at', 'updated_at']
+        fields = ['id', 'nome', 'endereco', 'timezone', 'usuario', 'usuario_nome', 
+                 'total_comodos', 'total_dispositivos']
     
     def get_total_comodos(self, obj):
         return obj.comodos.count()
     
     def get_total_dispositivos(self, obj):
         return sum(comodo.dispositivos.count() for comodo in obj.comodos.all())
-    
-    def get_dispositivos_online(self, obj):
-        total = 0
-        online = 0
-        for comodo in obj.comodos.all():
-            for dispositivo in comodo.dispositivos.all():
-                total += 1
-                if dispositivo.status_conexao == "Online":
-                    online += 1
-        return {"online": online, "total": total}
 
 class DispositivoSimpleSerializer(serializers.ModelSerializer):
     """Serializer simplificado para uso em listas"""
@@ -63,19 +46,15 @@ class DispositivoSimpleSerializer(serializers.ModelSerializer):
 class ComodoSerializer(serializers.ModelSerializer):
     dispositivos = DispositivoSimpleSerializer(many=True, read_only=True)
     total_dispositivos = serializers.SerializerMethodField()
-    dispositivos_ligados = serializers.SerializerMethodField()
     casa_nome = serializers.CharField(source='casa.nome', read_only=True)
     
     class Meta:
         model = Comodo
-        fields = '__all__'
-        read_only_fields = ['created_at', 'updated_at']
+        fields = ['id', 'nome', 'background_url', 'casa', 'casa_nome', 
+                 'dispositivos', 'total_dispositivos']
     
     def get_total_dispositivos(self, obj):
         return obj.dispositivos.count()
-    
-    def get_dispositivos_ligados(self, obj):
-        return obj.dispositivos.filter(estado=True).count()
 
 class DispositivoSerializer(serializers.ModelSerializer):
     tipo_nome = serializers.CharField(source='tipo.nome', read_only=True)
@@ -86,8 +65,8 @@ class DispositivoSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Dispositivo
-        fields = '__all__'
-        read_only_fields = ['created_at', 'updated_at', 'ultimo_ping']
+        fields = ['id', 'nome', 'estado', 'tipo', 'tipo_nome', 'tipo_categoria', 
+                 'comodo', 'comodo_nome', 'casa_nome', 'ativo', 'status_conexao']
 
 class AcaoCenaSerializer(serializers.ModelSerializer):
     dispositivo_nome = serializers.CharField(source='dispositivo.nome', read_only=True)
@@ -95,28 +74,24 @@ class AcaoCenaSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = AcaoCena
-        fields = '__all__'
-        read_only_fields = ['created_at']
+        fields = ['id', 'ordem', 'intervalo_tempo', 'estado_desejado', 'dispositivo', 
+                 'dispositivo_nome', 'dispositivo_comodo', 'cena', 'condicional']
 
 class CenaSerializer(serializers.ModelSerializer):
     acoes = AcaoCenaSerializer(many=True, read_only=True)
     total_acoes = serializers.SerializerMethodField()
     casa_nome = serializers.CharField(source='casa.nome', read_only=True)
-    pode_executar = serializers.SerializerMethodField()
+    pode_executar = serializers.ReadOnlyField()
+    status_disponibilidade = serializers.ReadOnlyField()
     
     class Meta:
         model = Cena
-        fields = '__all__'
-        read_only_fields = ['created_at', 'updated_at']
+        fields = ['id', 'nome', 'descricao', 'ativa', 'casa', 'casa_nome', 
+                 'indisponivel_ate', 'favorita', 'acoes', 'total_acoes',
+                 'pode_executar', 'status_disponibilidade']
     
     def get_total_acoes(self, obj):
         return obj.acoes.count()
-    
-    def get_pode_executar(self, obj):
-        from django.utils import timezone
-        if obj.indisponivel_ate and obj.indisponivel_ate > timezone.now():
-            return False
-        return True
 
 class LogDispositivoSerializer(serializers.ModelSerializer):
     dispositivo_nome = serializers.CharField(source='dispositivo.nome', read_only=True)
@@ -125,7 +100,9 @@ class LogDispositivoSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = LogDispositivo
-        fields = '__all__'
+        fields = ['id', 'dispositivo', 'dispositivo_nome', 'estado_anterior', 
+                 'estado_novo', 'origem', 'usuario', 'usuario_nome', 'cena', 
+                 'cena_nome', 'timestamp']
         read_only_fields = ['timestamp']
 
 # Serializers para autenticação

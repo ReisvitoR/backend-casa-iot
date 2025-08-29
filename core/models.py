@@ -118,6 +118,26 @@ class Cena(models.Model):
     def __str__(self):
         return f"{self.nome} - {self.casa.nome}"
 
+    @property
+    def pode_executar(self):
+        """Verifica se a cena pode ser executada agora"""
+        from django.utils import timezone
+        if not self.ativa:
+            return False
+        if self.indisponivel_ate and self.indisponivel_ate > timezone.now():
+            return False
+        return True
+
+    @property
+    def status_disponibilidade(self):
+        """Retorna o status atual da cena"""
+        from django.utils import timezone
+        if not self.ativa:
+            return "inativa"
+        if self.indisponivel_ate and self.indisponivel_ate > timezone.now():
+            return "temporariamente_indisponivel"
+        return "disponivel"
+
 class AcaoCena(models.Model):
     ordem = models.PositiveIntegerField()
     intervalo_tempo = models.FloatField(default=0.0, help_text="Intervalo em segundos antes desta ação")

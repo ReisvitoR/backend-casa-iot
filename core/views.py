@@ -50,43 +50,6 @@ class CasaViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         # Associa automaticamente ao usuário logado
         serializer.save(usuario=self.request.user)
-    
-    @action(detail=True, methods=['get'])
-    def dashboard(self, request, pk=None):
-        """Dashboard com estatísticas da casa"""
-        casa = self.get_object()
-        
-        total_comodos = casa.comodos.count()
-        total_dispositivos = sum(c.dispositivos.count() for c in casa.comodos.all())
-        dispositivos_ligados = sum(c.dispositivos.filter(estado=True).count() for c in casa.comodos.all())
-        dispositivos_online = sum(c.dispositivos.filter(
-            ultimo_ping__gte=timezone.now() - timezone.timedelta(minutes=5)
-        ).count() for c in casa.comodos.all())
-        
-        total_cenas = casa.cenas.count()
-        cenas_ativas = casa.cenas.filter(ativa=True).count()
-        
-        return Response({
-            'casa': CasaSerializer(casa).data,
-            'estatisticas': {
-                'total_comodos': total_comodos,
-                'total_dispositivos': total_dispositivos,
-                'dispositivos_ligados': dispositivos_ligados,
-                'dispositivos_online': dispositivos_online,
-                'total_cenas': total_cenas,
-                'cenas_ativas': cenas_ativas,
-                'consumo_estimado': self.calcular_consumo_estimado(casa),
-            }
-        })
-    
-    def calcular_consumo_estimado(self, casa):
-        """Calcula consumo estimado em kWh"""
-        consumo = 0
-        for comodo in casa.comodos.all():
-            for dispositivo in comodo.dispositivos.filter(estado=True):
-                if dispositivo.potencia:
-                    consumo += dispositivo.potencia / 1000  # Convert W to kW
-        return round(consumo, 2)
 
 class ComodoViewSet(viewsets.ModelViewSet):
     """API para gerenciamento de cômodos"""
@@ -176,40 +139,35 @@ class DispositivoViewSet(viewsets.ModelViewSet):
             'estado': dispositivo.estado,
             'dispositivo': DispositivoSerializer(dispositivo).data
         })
-    
+
     @action(detail=True, methods=['post'])
-    def ping(self, request, pk=None):
-        """Atualiza último ping do dispositivo"""
+    def toggle_ativo(self, request, pk=None):
+        """Ativa/desativa um dispositivo"""
         dispositivo = self.get_object()
-        dispositivo.ultimo_ping = timezone.now()
+        dispositivo.ativo = not dispositivo.ativo
         dispositivo.save()
         
         return Response({
-            'message': 'Ping atualizado',
-            'ultimo_ping': dispositivo.ultimo_ping,
-            'status_conexao': dispositivo.status_conexao
+            'message': f'Dispositivo {"ativado" if dispositivo.ativo else "desativado"}',
+            'ativo': dispositivo.ativo,
+            'dispositivo': DispositivoSerializer(dispositivo).data
         })
-    
+
     @action(detail=False, methods=['get'])
     def status_geral(self, request):
         """Status geral de todos os dispositivos do usuário"""
         dispositivos = self.get_queryset()
         
-        total = dispositivos.count()
-        ligados = dispositivos.filter(estado=True).count()
-        online = dispositivos.filter(
-            ultimo_ping__gte=timezone.now() - timezone.timedelta(minutes=5)
-        ).count()
-        inativos = dispositivos.filter(ativo=False).count()
-        
         return Response({
-            'total_dispositivos': total,
-            'dispositivos_ligados': ligados,
-            'dispositivos_online': online,
-            'dispositivos_inativos': inativos,
+            'total_dispositivos': dispositivos.count(),
+            'ativos': dispositivos.filter(ativo=True).count(),
+            'inativos': dispositivos.filter(ativo=False).count(),
+            'ligados': dispositivos.filter(estado=True, ativo=True).count(),
+            'desligados': dispositivos.filter(estado=False, ativo=True).count(),
             'por_tipo': dispositivos.values('tipo__nome').annotate(
                 total=Count('id'),
-                ligados=Count('id', filter=Q(estado=True))
+                ativos=Count('id', filter=Q(ativo=True)),
+                ligados=Count('id', filter=Q(estado=True, ativo=True))
             )
         })
 
@@ -231,11 +189,18 @@ class CenaViewSet(viewsets.ModelViewSet):
         cena = self.get_object()
         
         # Verifica se a cena pode ser executada
-        if cena.indisponivel_ate and cena.indisponivel_ate > timezone.now():
-            return Response({
-                'error': f'Cena indisponível até {cena.indisponivel_ate}',
-                'disponivel_em': cena.indisponivel_ate
-            }, status=status.HTTP_400_BAD_REQUEST)
+        if not cena.pode_executar:
+            if not cena.ativa:
+                return Response({
+                    'error': 'Cena está inativa',
+                    'status': 'inativa'
+                }, status=status.HTTP_400_BAD_REQUEST)
+            elif cena.indisponivel_ate and cena.indisponivel_ate > timezone.now():
+                return Response({
+                    'error': f'Cena temporariamente indisponível até {cena.indisponivel_ate}',
+                    'disponivel_em': cena.indisponivel_ate,
+                    'status': 'temporariamente_indisponivel'
+                }, status=status.HTTP_400_BAD_REQUEST)
         
         # Executa as ações
         acoes_executadas = []
@@ -243,6 +208,10 @@ class CenaViewSet(viewsets.ModelViewSet):
         
         for acao in cena.acoes.order_by('ordem'):
             dispositivo = acao.dispositivo
+            
+            # Pula dispositivos inativos
+            if not dispositivo.ativo:
+                continue
             
             # Verifica se é condicional
             if acao.condicional and dispositivo.estado == acao.estado_desejado:
@@ -277,7 +246,8 @@ class CenaViewSet(viewsets.ModelViewSet):
             'message': f'Cena "{cena.nome}" executada com sucesso',
             'acoes_executadas': acoes_executadas,
             'tempo_execucao': tempo_execucao,
-            'total_acoes': len(acoes_executadas)
+            'total_acoes': len(acoes_executadas),
+            'status': cena.status_disponibilidade
         })
     
     @action(detail=True, methods=['post'])
@@ -290,6 +260,66 @@ class CenaViewSet(viewsets.ModelViewSet):
         return Response({
             'message': f'Cena {"marcada" if cena.favorita else "desmarcada"} como favorita',
             'favorita': cena.favorita
+        })
+
+    @action(detail=True, methods=['post'])
+    def toggle_ativa(self, request, pk=None):
+        """Ativa/desativa uma cena"""
+        cena = self.get_object()
+        cena.ativa = not cena.ativa
+        cena.save()
+        
+        return Response({
+            'message': f'Cena {"ativada" if cena.ativa else "desativada"}',
+            'ativa': cena.ativa,
+            'status': cena.status_disponibilidade
+        })
+
+    @action(detail=True, methods=['post'])
+    def desativar_temporariamente(self, request, pk=None):
+        """Desativa uma cena temporariamente"""
+        cena = self.get_object()
+        minutos = request.data.get('minutos', 60)  # padrão 1 hora
+        
+        cena.indisponivel_ate = timezone.now() + timezone.timedelta(minutes=minutos)
+        cena.save()
+        
+        return Response({
+            'message': f'Cena desativada temporariamente por {minutos} minutos',
+            'indisponivel_ate': cena.indisponivel_ate,
+            'status': cena.status_disponibilidade
+        })
+
+    @action(detail=True, methods=['post'])
+    def reativar(self, request, pk=None):
+        """Reativa uma cena removendo a restrição temporal"""
+        cena = self.get_object()
+        cena.indisponivel_ate = None
+        cena.save()
+        
+        return Response({
+            'message': 'Cena reativada',
+            'status': cena.status_disponibilidade
+        })
+
+    @action(detail=False, methods=['get'])
+    def status_geral(self, request):
+        """Retorna status geral de todas as cenas do usuário"""
+        cenas = self.get_queryset()
+        
+        return Response({
+            'total_cenas': cenas.count(),
+            'ativas': cenas.filter(ativa=True).count(),
+            'inativas': cenas.filter(ativa=False).count(),
+            'temporariamente_indisponiveis': cenas.filter(
+                indisponivel_ate__gt=timezone.now()
+            ).count(),
+            'favoritas': cenas.filter(favorita=True).count(),
+            'por_status': {
+                'disponivel': len([c for c in cenas if c.status_disponibilidade == 'disponivel']),
+                'inativa': len([c for c in cenas if c.status_disponibilidade == 'inativa']),
+                'temporariamente_indisponivel': len([c for c in cenas if c.status_disponibilidade == 'temporariamente_indisponivel'])
+            }
         })
 
 class AcaoCenaViewSet(viewsets.ModelViewSet):
