@@ -1,0 +1,1684 @@
+openapi: 3.0.3
+info:
+  title: Casa IoT API
+  version: 1.0.0
+  description: Documentação da API do backend Casa IoT
+paths:
+  /api/acaos/:
+    get:
+      operationId: api_acaos_list
+      description: |-
+        retrieve:
+        Retorna uma ação de cena específica pelo ID.
+
+        list:
+        Lista todas as ações de cena cadastradas.
+
+        create:
+        Cria uma nova ação de cena.
+
+        update:
+        Atualiza uma ação de cena existente.
+
+        partial_update:
+        Atualiza parcialmente uma ação de cena existente.
+
+        destroy:
+        Remove uma ação de cena.
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AcaoCena'
+          description: ''
+    post:
+      operationId: api_acaos_create
+      description: |-
+        retrieve:
+        Retorna uma ação de cena específica pelo ID.
+
+        list:
+        Lista todas as ações de cena cadastradas.
+
+        create:
+        Cria uma nova ação de cena.
+
+        update:
+        Atualiza uma ação de cena existente.
+
+        partial_update:
+        Atualiza parcialmente uma ação de cena existente.
+
+        destroy:
+        Remove uma ação de cena.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AcaoCena'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AcaoCena'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AcaoCena'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AcaoCena'
+          description: ''
+  /api/acaos/{id}/:
+    get:
+      operationId: api_acaos_retrieve
+      description: |-
+        retrieve:
+        Retorna uma ação de cena específica pelo ID.
+
+        list:
+        Lista todas as ações de cena cadastradas.
+
+        create:
+        Cria uma nova ação de cena.
+
+        update:
+        Atualiza uma ação de cena existente.
+
+        partial_update:
+        Atualiza parcialmente uma ação de cena existente.
+
+        destroy:
+        Remove uma ação de cena.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this acao cena.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AcaoCena'
+          description: ''
+    put:
+      operationId: api_acaos_update
+      description: |-
+        retrieve:
+        Retorna uma ação de cena específica pelo ID.
+
+        list:
+        Lista todas as ações de cena cadastradas.
+
+        create:
+        Cria uma nova ação de cena.
+
+        update:
+        Atualiza uma ação de cena existente.
+
+        partial_update:
+        Atualiza parcialmente uma ação de cena existente.
+
+        destroy:
+        Remove uma ação de cena.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this acao cena.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AcaoCena'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AcaoCena'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AcaoCena'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AcaoCena'
+          description: ''
+    patch:
+      operationId: api_acaos_partial_update
+      description: |-
+        retrieve:
+        Retorna uma ação de cena específica pelo ID.
+
+        list:
+        Lista todas as ações de cena cadastradas.
+
+        create:
+        Cria uma nova ação de cena.
+
+        update:
+        Atualiza uma ação de cena existente.
+
+        partial_update:
+        Atualiza parcialmente uma ação de cena existente.
+
+        destroy:
+        Remove uma ação de cena.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this acao cena.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAcaoCena'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAcaoCena'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAcaoCena'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AcaoCena'
+          description: ''
+    delete:
+      operationId: api_acaos_destroy
+      description: |-
+        retrieve:
+        Retorna uma ação de cena específica pelo ID.
+
+        list:
+        Lista todas as ações de cena cadastradas.
+
+        create:
+        Cria uma nova ação de cena.
+
+        update:
+        Atualiza uma ação de cena existente.
+
+        partial_update:
+        Atualiza parcialmente uma ação de cena existente.
+
+        destroy:
+        Remove uma ação de cena.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this acao cena.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/cenas/:
+    get:
+      operationId: api_cenas_list
+      description: |-
+        retrieve:
+        Retorna uma cena específica pelo ID.
+
+        list:
+        Lista todas as cenas cadastradas.
+
+        create:
+        Cria uma nova cena.
+
+        update:
+        Atualiza uma cena existente.
+
+        partial_update:
+        Atualiza parcialmente uma cena existente.
+
+        destroy:
+        Remove uma cena.
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Cena'
+          description: ''
+    post:
+      operationId: api_cenas_create
+      description: |-
+        retrieve:
+        Retorna uma cena específica pelo ID.
+
+        list:
+        Lista todas as cenas cadastradas.
+
+        create:
+        Cria uma nova cena.
+
+        update:
+        Atualiza uma cena existente.
+
+        partial_update:
+        Atualiza parcialmente uma cena existente.
+
+        destroy:
+        Remove uma cena.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cena'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Cena'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Cena'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cena'
+          description: ''
+  /api/cenas/{id}/:
+    get:
+      operationId: api_cenas_retrieve
+      description: |-
+        retrieve:
+        Retorna uma cena específica pelo ID.
+
+        list:
+        Lista todas as cenas cadastradas.
+
+        create:
+        Cria uma nova cena.
+
+        update:
+        Atualiza uma cena existente.
+
+        partial_update:
+        Atualiza parcialmente uma cena existente.
+
+        destroy:
+        Remove uma cena.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this cena.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cena'
+          description: ''
+    put:
+      operationId: api_cenas_update
+      description: |-
+        retrieve:
+        Retorna uma cena específica pelo ID.
+
+        list:
+        Lista todas as cenas cadastradas.
+
+        create:
+        Cria uma nova cena.
+
+        update:
+        Atualiza uma cena existente.
+
+        partial_update:
+        Atualiza parcialmente uma cena existente.
+
+        destroy:
+        Remove uma cena.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this cena.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cena'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Cena'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Cena'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cena'
+          description: ''
+    patch:
+      operationId: api_cenas_partial_update
+      description: |-
+        retrieve:
+        Retorna uma cena específica pelo ID.
+
+        list:
+        Lista todas as cenas cadastradas.
+
+        create:
+        Cria uma nova cena.
+
+        update:
+        Atualiza uma cena existente.
+
+        partial_update:
+        Atualiza parcialmente uma cena existente.
+
+        destroy:
+        Remove uma cena.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this cena.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCena'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCena'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCena'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cena'
+          description: ''
+    delete:
+      operationId: api_cenas_destroy
+      description: |-
+        retrieve:
+        Retorna uma cena específica pelo ID.
+
+        list:
+        Lista todas as cenas cadastradas.
+
+        create:
+        Cria uma nova cena.
+
+        update:
+        Atualiza uma cena existente.
+
+        partial_update:
+        Atualiza parcialmente uma cena existente.
+
+        destroy:
+        Remove uma cena.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this cena.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/comodos/:
+    get:
+      operationId: api_comodos_list
+      description: |-
+        retrieve:
+        Retorna um cômodo específico pelo ID.
+
+        list:
+        Lista todos os cômodos cadastrados.
+
+        create:
+        Cria um novo cômodo.
+
+        update:
+        Atualiza um cômodo existente.
+
+        partial_update:
+        Atualiza parcialmente um cômodo existente.
+
+        destroy:
+        Remove um cômodo.
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comodo'
+          description: ''
+    post:
+      operationId: api_comodos_create
+      description: |-
+        retrieve:
+        Retorna um cômodo específico pelo ID.
+
+        list:
+        Lista todos os cômodos cadastrados.
+
+        create:
+        Cria um novo cômodo.
+
+        update:
+        Atualiza um cômodo existente.
+
+        partial_update:
+        Atualiza parcialmente um cômodo existente.
+
+        destroy:
+        Remove um cômodo.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comodo'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Comodo'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Comodo'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comodo'
+          description: ''
+  /api/comodos/{id}/:
+    get:
+      operationId: api_comodos_retrieve
+      description: |-
+        retrieve:
+        Retorna um cômodo específico pelo ID.
+
+        list:
+        Lista todos os cômodos cadastrados.
+
+        create:
+        Cria um novo cômodo.
+
+        update:
+        Atualiza um cômodo existente.
+
+        partial_update:
+        Atualiza parcialmente um cômodo existente.
+
+        destroy:
+        Remove um cômodo.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this comodo.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comodo'
+          description: ''
+    put:
+      operationId: api_comodos_update
+      description: |-
+        retrieve:
+        Retorna um cômodo específico pelo ID.
+
+        list:
+        Lista todos os cômodos cadastrados.
+
+        create:
+        Cria um novo cômodo.
+
+        update:
+        Atualiza um cômodo existente.
+
+        partial_update:
+        Atualiza parcialmente um cômodo existente.
+
+        destroy:
+        Remove um cômodo.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this comodo.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comodo'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Comodo'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Comodo'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comodo'
+          description: ''
+    patch:
+      operationId: api_comodos_partial_update
+      description: |-
+        retrieve:
+        Retorna um cômodo específico pelo ID.
+
+        list:
+        Lista todos os cômodos cadastrados.
+
+        create:
+        Cria um novo cômodo.
+
+        update:
+        Atualiza um cômodo existente.
+
+        partial_update:
+        Atualiza parcialmente um cômodo existente.
+
+        destroy:
+        Remove um cômodo.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this comodo.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedComodo'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedComodo'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedComodo'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comodo'
+          description: ''
+    delete:
+      operationId: api_comodos_destroy
+      description: |-
+        retrieve:
+        Retorna um cômodo específico pelo ID.
+
+        list:
+        Lista todos os cômodos cadastrados.
+
+        create:
+        Cria um novo cômodo.
+
+        update:
+        Atualiza um cômodo existente.
+
+        partial_update:
+        Atualiza parcialmente um cômodo existente.
+
+        destroy:
+        Remove um cômodo.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this comodo.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/dispositivos/:
+    get:
+      operationId: api_dispositivos_list
+      description: |-
+        retrieve:
+        Retorna um dispositivo específico pelo ID.
+
+        list:
+        Lista todos os dispositivos cadastrados.
+
+        create:
+        Cria um novo dispositivo.
+
+        update:
+        Atualiza um dispositivo existente.
+
+        partial_update:
+        Atualiza parcialmente um dispositivo existente.
+
+        destroy:
+        Remove um dispositivo.
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Dispositivo'
+          description: ''
+    post:
+      operationId: api_dispositivos_create
+      description: |-
+        retrieve:
+        Retorna um dispositivo específico pelo ID.
+
+        list:
+        Lista todos os dispositivos cadastrados.
+
+        create:
+        Cria um novo dispositivo.
+
+        update:
+        Atualiza um dispositivo existente.
+
+        partial_update:
+        Atualiza parcialmente um dispositivo existente.
+
+        destroy:
+        Remove um dispositivo.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Dispositivo'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Dispositivo'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Dispositivo'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dispositivo'
+          description: ''
+  /api/dispositivos/{id}/:
+    get:
+      operationId: api_dispositivos_retrieve
+      description: |-
+        retrieve:
+        Retorna um dispositivo específico pelo ID.
+
+        list:
+        Lista todos os dispositivos cadastrados.
+
+        create:
+        Cria um novo dispositivo.
+
+        update:
+        Atualiza um dispositivo existente.
+
+        partial_update:
+        Atualiza parcialmente um dispositivo existente.
+
+        destroy:
+        Remove um dispositivo.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this dispositivo.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dispositivo'
+          description: ''
+    put:
+      operationId: api_dispositivos_update
+      description: |-
+        retrieve:
+        Retorna um dispositivo específico pelo ID.
+
+        list:
+        Lista todos os dispositivos cadastrados.
+
+        create:
+        Cria um novo dispositivo.
+
+        update:
+        Atualiza um dispositivo existente.
+
+        partial_update:
+        Atualiza parcialmente um dispositivo existente.
+
+        destroy:
+        Remove um dispositivo.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this dispositivo.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Dispositivo'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Dispositivo'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Dispositivo'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dispositivo'
+          description: ''
+    patch:
+      operationId: api_dispositivos_partial_update
+      description: |-
+        retrieve:
+        Retorna um dispositivo específico pelo ID.
+
+        list:
+        Lista todos os dispositivos cadastrados.
+
+        create:
+        Cria um novo dispositivo.
+
+        update:
+        Atualiza um dispositivo existente.
+
+        partial_update:
+        Atualiza parcialmente um dispositivo existente.
+
+        destroy:
+        Remove um dispositivo.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this dispositivo.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDispositivo'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedDispositivo'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedDispositivo'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dispositivo'
+          description: ''
+    delete:
+      operationId: api_dispositivos_destroy
+      description: |-
+        retrieve:
+        Retorna um dispositivo específico pelo ID.
+
+        list:
+        Lista todos os dispositivos cadastrados.
+
+        create:
+        Cria um novo dispositivo.
+
+        update:
+        Atualiza um dispositivo existente.
+
+        partial_update:
+        Atualiza parcialmente um dispositivo existente.
+
+        destroy:
+        Remove um dispositivo.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this dispositivo.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/schema/:
+    get:
+      operationId: api_schema_retrieve
+      description: |-
+        OpenApi3 schema for this API. Format can be selected via content negotiation.
+
+        - YAML: application/vnd.oai.openapi
+        - JSON: application/vnd.oai.openapi+json
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - yaml
+      - in: query
+        name: lang
+        schema:
+          type: string
+          enum:
+          - af
+          - ar
+          - ar-dz
+          - ast
+          - az
+          - be
+          - bg
+          - bn
+          - br
+          - bs
+          - ca
+          - ckb
+          - cs
+          - cy
+          - da
+          - de
+          - dsb
+          - el
+          - en
+          - en-au
+          - en-gb
+          - eo
+          - es
+          - es-ar
+          - es-co
+          - es-mx
+          - es-ni
+          - es-ve
+          - et
+          - eu
+          - fa
+          - fi
+          - fr
+          - fy
+          - ga
+          - gd
+          - gl
+          - he
+          - hi
+          - hr
+          - hsb
+          - hu
+          - hy
+          - ia
+          - id
+          - ig
+          - io
+          - is
+          - it
+          - ja
+          - ka
+          - kab
+          - kk
+          - km
+          - kn
+          - ko
+          - ky
+          - lb
+          - lt
+          - lv
+          - mk
+          - ml
+          - mn
+          - mr
+          - ms
+          - my
+          - nb
+          - ne
+          - nl
+          - nn
+          - os
+          - pa
+          - pl
+          - pt
+          - pt-br
+          - ro
+          - ru
+          - sk
+          - sl
+          - sq
+          - sr
+          - sr-latn
+          - sv
+          - sw
+          - ta
+          - te
+          - tg
+          - th
+          - tk
+          - tr
+          - tt
+          - udm
+          - ug
+          - uk
+          - ur
+          - uz
+          - vi
+          - zh-hans
+          - zh-hant
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/vnd.oai.openapi:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/yaml:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/vnd.oai.openapi+json:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/usuarios/:
+    get:
+      operationId: api_usuarios_list
+      description: |-
+        retrieve:
+        Retorna um usuário específico pelo ID.
+
+        list:
+        Lista todos os usuários cadastrados.
+
+        create:
+        Cria um novo usuário.
+
+        update:
+        Atualiza um usuário existente.
+
+        partial_update:
+        Atualiza parcialmente um usuário existente.
+
+        destroy:
+        Remove um usuário.
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Usuario'
+          description: ''
+    post:
+      operationId: api_usuarios_create
+      description: |-
+        retrieve:
+        Retorna um usuário específico pelo ID.
+
+        list:
+        Lista todos os usuários cadastrados.
+
+        create:
+        Cria um novo usuário.
+
+        update:
+        Atualiza um usuário existente.
+
+        partial_update:
+        Atualiza parcialmente um usuário existente.
+
+        destroy:
+        Remove um usuário.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Usuario'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Usuario'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Usuario'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+          description: ''
+  /api/usuarios/{id}/:
+    get:
+      operationId: api_usuarios_retrieve
+      description: |-
+        retrieve:
+        Retorna um usuário específico pelo ID.
+
+        list:
+        Lista todos os usuários cadastrados.
+
+        create:
+        Cria um novo usuário.
+
+        update:
+        Atualiza um usuário existente.
+
+        partial_update:
+        Atualiza parcialmente um usuário existente.
+
+        destroy:
+        Remove um usuário.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this usuario.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+          description: ''
+    put:
+      operationId: api_usuarios_update
+      description: |-
+        retrieve:
+        Retorna um usuário específico pelo ID.
+
+        list:
+        Lista todos os usuários cadastrados.
+
+        create:
+        Cria um novo usuário.
+
+        update:
+        Atualiza um usuário existente.
+
+        partial_update:
+        Atualiza parcialmente um usuário existente.
+
+        destroy:
+        Remove um usuário.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this usuario.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Usuario'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Usuario'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Usuario'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+          description: ''
+    patch:
+      operationId: api_usuarios_partial_update
+      description: |-
+        retrieve:
+        Retorna um usuário específico pelo ID.
+
+        list:
+        Lista todos os usuários cadastrados.
+
+        create:
+        Cria um novo usuário.
+
+        update:
+        Atualiza um usuário existente.
+
+        partial_update:
+        Atualiza parcialmente um usuário existente.
+
+        destroy:
+        Remove um usuário.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this usuario.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUsuario'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUsuario'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUsuario'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+          description: ''
+    delete:
+      operationId: api_usuarios_destroy
+      description: |-
+        retrieve:
+        Retorna um usuário específico pelo ID.
+
+        list:
+        Lista todos os usuários cadastrados.
+
+        create:
+        Cria um novo usuário.
+
+        update:
+        Atualiza um usuário existente.
+
+        partial_update:
+        Atualiza parcialmente um usuário existente.
+
+        destroy:
+        Remove um usuário.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this usuario.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+components:
+  schemas:
+    AcaoCena:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        ordem:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        intervalo_tempo:
+          type: number
+          format: double
+          nullable: true
+        estado_desejado:
+          type: boolean
+        dispositivo:
+          type: string
+          format: uuid
+        cena:
+          type: string
+          format: uuid
+      required:
+      - cena
+      - dispositivo
+      - estado_desejado
+      - id
+      - ordem
+    Cena:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        nome:
+          type: string
+          maxLength: 255
+        ativa:
+          type: boolean
+        usuario:
+          type: string
+          format: uuid
+      required:
+      - id
+      - nome
+      - usuario
+    Comodo:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        nome:
+          type: string
+          maxLength: 255
+        background_url:
+          type: string
+          nullable: true
+          maxLength: 255
+        usuario:
+          type: string
+          format: uuid
+      required:
+      - id
+      - nome
+      - usuario
+    Dispositivo:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        nome:
+          type: string
+          maxLength: 255
+        estado:
+          type: boolean
+        tipo:
+          type: string
+          maxLength: 50
+        comodo:
+          type: string
+          format: uuid
+      required:
+      - comodo
+      - id
+      - nome
+      - tipo
+    PatchedAcaoCena:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        ordem:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        intervalo_tempo:
+          type: number
+          format: double
+          nullable: true
+        estado_desejado:
+          type: boolean
+        dispositivo:
+          type: string
+          format: uuid
+        cena:
+          type: string
+          format: uuid
+    PatchedCena:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        nome:
+          type: string
+          maxLength: 255
+        ativa:
+          type: boolean
+        usuario:
+          type: string
+          format: uuid
+    PatchedComodo:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        nome:
+          type: string
+          maxLength: 255
+        background_url:
+          type: string
+          nullable: true
+          maxLength: 255
+        usuario:
+          type: string
+          format: uuid
+    PatchedDispositivo:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        nome:
+          type: string
+          maxLength: 255
+        estado:
+          type: boolean
+        tipo:
+          type: string
+          maxLength: 50
+        comodo:
+          type: string
+          format: uuid
+    PatchedUsuario:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        email:
+          type: string
+          format: email
+          maxLength: 255
+        senha_hash:
+          type: string
+          maxLength: 255
+    Usuario:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        email:
+          type: string
+          format: email
+          maxLength: 255
+        senha_hash:
+          type: string
+          maxLength: 255
+      required:
+      - email
+      - id
+      - senha_hash
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid

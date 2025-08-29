@@ -1,0 +1,58 @@
+@startuml
+class Usuario {
+  - id: UUID
+  - email: String
+  - senhaHash: String
+  --
+  + cadastrar(email, senha)
+  + login(email, senha)
+  + getComodos()
+  + getCenas()
+}
+
+class Comodo {
+  - id: UUID
+  - nome: String
+  - backgroundUrl: String
+  - idUsuario: UUID
+  --
+  + adicionarDispositivo(dispositivo: Dispositivo)
+  + removerDispositivo(dispositivo: Dispositivo)
+}
+
+class Dispositivo {
+  - id: UUID
+  - nome: String
+  - estado: Boolean
+  - tipo: String
+  - idComodo: UUID
+  --
+  + ligar()
+  + desligar()
+  + mudarEstado()
+}
+
+class Cena {
+  - id: UUID
+  - nome: String
+  - ativa: Boolean
+  - idUsuario: UUID
+  --
+  + executar()
+  + adicionarAcao(acao: AcaoCena)
+}
+
+class AcaoCena {
+  - id: UUID
+  - ordem: Integer
+  - estadoDesejado: Boolean
+  - idDispositivo: UUID
+  - idCena: UUID
+}
+
+Usuario "1" -- "0..*" Comodo : cria
+Usuario "1" -- "0..*" Cena : cria
+Comodo "1" -- "0..*" Dispositivo : contém
+Cena "1" -- "0..*" AcaoCena : contém
+Dispositivo "1" -- "0..*" AcaoCena : é associado
+@enduml

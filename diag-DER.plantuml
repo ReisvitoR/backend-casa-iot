@@ -1,0 +1,52 @@
+@startuml
+entity Usuario {
+  *id: UUID <<PK>>
+  --
+  email: VARCHAR(255)
+  senha_hash: VARCHAR(255)
+}
+
+entity Comodo {
+  *id: UUID <<PK>>
+  --
+  nome: VARCHAR(255)
+  --
+  *id_usuario: UUID <<FK>>
+}
+
+entity Dispositivo {
+  *id: UUID <<PK>>
+  --
+  nome: VARCHAR(255)
+  estado: BOOLEAN
+  tipo: VARCHAR(50)
+  --
+  *id_comodo: UUID <<FK>>
+}
+
+entity Cena {
+  *id: UUID <<PK>>
+  --
+  nome: VARCHAR(255)
+  ativa: BOOLEAN
+  --
+  *id_usuario: UUID <<FK>>
+}
+
+entity AcaoCena {
+  *id: UUID <<PK>>
+     
+  ordem: INTEGER
+  intervalo_tempo: FLOAT
+  estado_desejado: BOOLEAN
+  --
+  *id_dispositivo: UUID <<FK>>
+  *id_cena: UUID <<FK>>
+}
+
+Usuario ||--o{ Comodo
+Comodo ||--o{ Dispositivo
+Usuario ||--o{ Cena
+Cena }|--|| AcaoCena
+Dispositivo }|--|| AcaoCena
+@enduml

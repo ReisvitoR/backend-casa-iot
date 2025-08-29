@@ -1,0 +1,495 @@
+[
+  {
+    "model": "core.usuario",
+    "pk": 1,
+    "fields": {
+      "username": "vitorhugo",
+      "email": "vitorhugo@exemplo.com",
+      "first_name": "Vitor",
+      "last_name": "Hugo",
+      "is_active": true,
+      "is_staff": false,
+      "is_superuser": false,
+      "password": "pbkdf2_sha256$600000$dummy$hash",
+      "date_joined": "2025-08-29T14:00:00Z"
+    }
+  },
+  {
+    "model": "core.usuario",
+    "pk": 2,
+    "fields": {
+      "username": "maria",
+      "email": "maria@exemplo.com",
+      "first_name": "Maria",
+      "last_name": "Silva",
+      "is_active": true,
+      "is_staff": false,
+      "is_superuser": false,
+      "password": "pbkdf2_sha256$600000$dummy$hash",
+      "date_joined": "2025-08-29T14:00:00Z"
+    }
+  },
+  {
+    "model": "core.tipodispositivo",
+    "pk": 1,
+    "fields": {
+      "nome": "Lâmpada LED",
+      "icone": "fas fa-lightbulb",
+      "categoria": "iluminacao"
+    }
+  },
+  {
+    "model": "core.tipodispositivo",
+    "pk": 2,
+    "fields": {
+      "nome": "Tomada Inteligente",
+      "icone": "fas fa-plug",
+      "categoria": "eletrodomestico"
+    }
+  },
+  {
+    "model": "core.tipodispositivo",
+    "pk": 3,
+    "fields": {
+      "nome": "Sensor Temperatura",
+      "icone": "fas fa-thermometer-half",
+      "categoria": "seguranca"
+    }
+  },
+  {
+    "model": "core.tipodispositivo",
+    "pk": 4,
+    "fields": {
+      "nome": "Ar Condicionado",
+      "icone": "fas fa-snowflake",
+      "categoria": "climatizacao"
+    }
+  },
+  {
+    "model": "core.casa",
+    "pk": 1,
+    "fields": {
+      "nome": "Casa Principal",
+      "endereco": "Rua das Flores, 123",
+      "timezone": "America/Sao_Paulo",
+      "usuario": 1
+    }
+  },
+  {
+    "model": "core.casa",
+    "pk": 2,
+    "fields": {
+      "nome": "Casa da Praia",
+      "endereco": "Av. Beira Mar, 456",
+      "timezone": "America/Sao_Paulo",
+      "usuario": 1
+    }
+  },
+  {
+    "model": "core.casa",
+    "pk": 3,
+    "fields": {
+      "nome": "Apartamento Centro",
+      "endereco": "Rua Central, 789",
+      "timezone": "America/Sao_Paulo",
+      "usuario": 2
+    }
+  },
+  {
+    "model": "core.comodo",
+    "pk": 1,
+    "fields": {
+      "nome": "Sala de Estar",
+      "background_url": null,
+      "casa": 1
+    }
+  },
+  {
+    "model": "core.comodo",
+    "pk": 2,
+    "fields": {
+      "nome": "Cozinha",
+      "background_url": null,
+      "casa": 1
+    }
+  },
+  {
+    "model": "core.comodo",
+    "pk": 3,
+    "fields": {
+      "nome": "Quarto Master",
+      "background_url": null,
+      "casa": 1
+    }
+  },
+  {
+    "model": "core.comodo",
+    "pk": 4,
+    "fields": {
+      "nome": "Banheiro Social",
+      "background_url": null,
+      "casa": 1
+    }
+  },
+  {
+    "model": "core.comodo",
+    "pk": 5,
+    "fields": {
+      "nome": "Garagem",
+      "background_url": null,
+      "casa": 1
+    }
+  },
+  {
+    "model": "core.comodo",
+    "pk": 6,
+    "fields": {
+      "nome": "Varanda",
+      "background_url": null,
+      "casa": 2
+    }
+  },
+  {
+    "model": "core.comodo",
+    "pk": 7,
+    "fields": {
+      "nome": "Sala",
+      "background_url": null,
+      "casa": 3
+    }
+  },
+  {
+    "model": "core.dispositivo",
+    "pk": 1,
+    "fields": {
+      "nome": "Lâmpada Sala Principal",
+      "estado": true,
+      "tipo": 1,
+      "comodo": 1,
+      "potencia": 12.0,
+      "marca": "Philips",
+      "modelo": "Hue White",
+      "ip_address": "192.168.1.101",
+      "mac_address": "AA:BB:CC:DD:EE:01",
+      "ativo": true,
+      "ultimo_ping": "2025-08-29T14:00:00Z"
+    }
+  },
+  {
+    "model": "core.dispositivo",
+    "pk": 2,
+    "fields": {
+      "nome": "Lâmpada Pendente Sala",
+      "estado": false,
+      "tipo": 1,
+      "comodo": 1,
+      "potencia": 18.0,
+      "marca": "Philips",
+      "modelo": "Hue Color",
+      "ip_address": "192.168.1.102",
+      "mac_address": "AA:BB:CC:DD:EE:02",
+      "ativo": true,
+      "ultimo_ping": "2025-08-29T13:55:00Z"
+    }
+  },
+  {
+    "model": "core.dispositivo",
+    "pk": 3,
+    "fields": {
+      "nome": "Tomada TV",
+      "estado": true,
+      "tipo": 2,
+      "comodo": 1,
+      "potencia": 150.0,
+      "marca": "TP-Link",
+      "modelo": "Kasa HS100",
+      "ip_address": "192.168.1.103",
+      "mac_address": "AA:BB:CC:DD:EE:03",
+      "ativo": true,
+      "ultimo_ping": "2025-08-29T14:02:00Z"
+    }
+  },
+  {
+    "model": "core.dispositivo",
+    "pk": 4,
+    "fields": {
+      "nome": "Lâmpada Cozinha",
+      "estado": false,
+      "tipo": 1,
+      "comodo": 2,
+      "potencia": 9.0,
+      "marca": "Xiaomi",
+      "modelo": "Mi Smart LED",
+      "ip_address": "192.168.1.104",
+      "mac_address": "AA:BB:CC:DD:EE:04",
+      "ativo": true,
+      "ultimo_ping": "2025-08-29T13:58:00Z"
+    }
+  },
+  {
+    "model": "core.dispositivo",
+    "pk": 5,
+    "fields": {
+      "nome": "Tomada Geladeira",
+      "estado": true,
+      "tipo": 2,
+      "comodo": 2,
+      "potencia": 200.0,
+      "marca": "Sonoff",
+      "modelo": "S31",
+      "ip_address": "192.168.1.105",
+      "mac_address": "AA:BB:CC:DD:EE:05",
+      "ativo": true,
+      "ultimo_ping": "2025-08-29T14:01:00Z"
+    }
+  },
+  {
+    "model": "core.dispositivo",
+    "pk": 6,
+    "fields": {
+      "nome": "Ar Condicionado Quarto",
+      "estado": false,
+      "tipo": 4,
+      "comodo": 3,
+      "potencia": 1200.0,
+      "marca": "LG",
+      "modelo": "Smart Inverter",
+      "ip_address": "192.168.1.106",
+      "mac_address": "AA:BB:CC:DD:EE:06",
+      "ativo": true,
+      "ultimo_ping": "2025-08-29T13:45:00Z"
+    }
+  },
+  {
+    "model": "core.dispositivo",
+    "pk": 7,
+    "fields": {
+      "nome": "Lâmpada Quarto",
+      "estado": true,
+      "tipo": 1,
+      "comodo": 3,
+      "potencia": 12.0,
+      "marca": "Yeelight",
+      "modelo": "Color Bulb",
+      "ip_address": "192.168.1.107",
+      "mac_address": "AA:BB:CC:DD:EE:07",
+      "ativo": true,
+      "ultimo_ping": "2025-08-29T14:03:00Z"
+    }
+  },
+  {
+    "model": "core.dispositivo",
+    "pk": 8,
+    "fields": {
+      "nome": "Sensor Temperatura Quarto",
+      "estado": true,
+      "tipo": 3,
+      "comodo": 3,
+      "potencia": 0.5,
+      "marca": "Xiaomi",
+      "modelo": "Aqara Temperature",
+      "ip_address": "192.168.1.108",
+      "mac_address": "AA:BB:CC:DD:EE:08",
+      "ativo": true,
+      "ultimo_ping": "2025-08-29T14:00:00Z"
+    }
+  },
+  {
+    "model": "core.dispositivo",
+    "pk": 9,
+    "fields": {
+      "nome": "Lâmpada Banheiro",
+      "estado": false,
+      "tipo": 1,
+      "comodo": 4,
+      "potencia": 9.0,
+      "marca": "Philips",
+      "modelo": "Hue White",
+      "ip_address": "192.168.1.109",
+      "mac_address": "AA:BB:CC:DD:EE:09",
+      "ativo": false,
+      "ultimo_ping": "2025-08-29T12:30:00Z"
+    }
+  },
+  {
+    "model": "core.dispositivo",
+    "pk": 10,
+    "fields": {
+      "nome": "Lâmpada Garagem",
+      "estado": false,
+      "tipo": 1,
+      "comodo": 5,
+      "potencia": 15.0,
+      "marca": "Osram",
+      "modelo": "Smart+ Classic",
+      "ip_address": "192.168.1.110",
+      "mac_address": "AA:BB:CC:DD:EE:10",
+      "ativo": true,
+      "ultimo_ping": "2025-08-29T13:50:00Z"
+    }
+  },
+  {
+    "model": "core.cena",
+    "pk": 1,
+    "fields": {
+      "nome": "Chegando em Casa",
+      "descricao": "Liga as luzes principais e tomadas essenciais quando chegar em casa",
+      "casa": 1,
+      "ativa": true,
+      "favorita": true
+    }
+  },
+  {
+    "model": "core.cena",
+    "pk": 2,
+    "fields": {
+      "nome": "Saindo de Casa",
+      "descricao": "Desliga todos os dispositivos não essenciais ao sair",
+      "casa": 1,
+      "ativa": true,
+      "favorita": false
+    }
+  },
+  {
+    "model": "core.cena",
+    "pk": 3,
+    "fields": {
+      "nome": "Modo Noturno",
+      "descricao": "Configura ambiente ideal para dormir",
+      "casa": 1,
+      "ativa": true,
+      "favorita": true
+    }
+  },
+  {
+    "model": "core.cena",
+    "pk": 4,
+    "fields": {
+      "nome": "Assistir TV",
+      "descricao": "Ambiente perfeito para assistir filmes",
+      "casa": 1,
+      "ativa": true,
+      "favorita": false
+    }
+  },
+  {
+    "model": "core.acaocena",
+    "pk": 1,
+    "fields": {
+      "cena": 1,
+      "dispositivo": 1,
+      "estado_desejado": true,
+      "ordem": 1,
+      "intervalo_tempo": 0,
+      "condicional": false
+    }
+  },
+  {
+    "model": "core.acaocena",
+    "pk": 2,
+    "fields": {
+      "cena": 1,
+      "dispositivo": 4,
+      "estado_desejado": true,
+      "ordem": 2,
+      "intervalo_tempo": 2,
+      "condicional": false
+    }
+  },
+  {
+    "model": "core.acaocena",
+    "pk": 3,
+    "fields": {
+      "cena": 1,
+      "dispositivo": 3,
+      "estado_desejado": true,
+      "ordem": 3,
+      "intervalo_tempo": 1,
+      "condicional": false
+    }
+  },
+  {
+    "model": "core.acaocena",
+    "pk": 4,
+    "fields": {
+      "cena": 2,
+      "dispositivo": 1,
+      "estado_desejado": false,
+      "ordem": 1,
+      "intervalo_tempo": 0,
+      "condicional": false
+    }
+  },
+  {
+    "model": "core.acaocena",
+    "pk": 5,
+    "fields": {
+      "cena": 2,
+      "dispositivo": 2,
+      "estado_desejado": false,
+      "ordem": 2,
+      "intervalo_tempo": 1,
+      "condicional": false
+    }
+  },
+  {
+    "model": "core.acaocena",
+    "pk": 6,
+    "fields": {
+      "cena": 2,
+      "dispositivo": 4,
+      "estado_desejado": false,
+      "ordem": 3,
+      "intervalo_tempo": 1,
+      "condicional": false
+    }
+  },
+  {
+    "model": "core.acaocena",
+    "pk": 7,
+    "fields": {
+      "cena": 3,
+      "dispositivo": 7,
+      "estado_desejado": false,
+      "ordem": 1,
+      "intervalo_tempo": 0,
+      "condicional": false
+    }
+  },
+  {
+    "model": "core.acaocena",
+    "pk": 8,
+    "fields": {
+      "cena": 3,
+      "dispositivo": 1,
+      "estado_desejado": false,
+      "ordem": 2,
+      "intervalo_tempo": 2,
+      "condicional": false
+    }
+  },
+  {
+    "model": "core.acaocena",
+    "pk": 9,
+    "fields": {
+      "cena": 4,
+      "dispositivo": 1,
+      "estado_desejado": false,
+      "ordem": 1,
+      "intervalo_tempo": 0,
+      "condicional": false
+    }
+  },
+  {
+    "model": "core.acaocena",
+    "pk": 10,
+    "fields": {
+      "cena": 4,
+      "dispositivo": 2,
+      "estado_desejado": true,
+      "ordem": 2,
+      "intervalo_tempo": 1,
+      "condicional": false
+    }
+  }
+]
