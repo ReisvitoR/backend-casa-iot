@@ -1,7 +1,7 @@
 from rest_framework import routers
 from core.views import (
     UsuarioViewSet, ComodoViewSet, DispositivoViewSet, CenaViewSet, 
-    AcaoCenaViewSet, CasaViewSet, TipoDispositivoViewSet, LogDispositivoViewSet, CustomAuthToken
+    AcaoCenaViewSet, CasaViewSet, TipoDispositivoViewSet, LogDispositivoViewSet, CustomAuthToken, index
 )
 from django.urls import path, include
 

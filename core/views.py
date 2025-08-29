@@ -6,9 +6,14 @@ from rest_framework.authtoken.models import Token
 from django.utils import timezone
 from django.db.models import Count, Q
 from django_filters.rest_framework import DjangoFilterBackend
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
+from django.http import HttpResponse
 from .models import *
 from .serializers import *
+
+def index(request):
+    """Página inicial do sistema"""
+    return render(request, 'core/index.html')
 
 class CustomAuthToken(ObtainAuthToken):
     """Autenticação customizada que retorna informações do usuário"""

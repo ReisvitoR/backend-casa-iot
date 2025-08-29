@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casa IoT - Sistema de Automação Residencial</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+        }
+        
+        .logo {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+        
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .link-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            text-decoration: none;
+            padding: 30px 20px;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            display: block;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .link-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+        
+        .link-card.admin {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .link-card.api {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .link-card.docs {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .link-card .icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        .link-card .title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .link-card .description {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        .footer {
+            margin-top: 40px;
+            color: #888;
+            font-size: 0.9em;
+        }
+        
+        .version {
+            background: #f8f9fa;
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: inline-block;
+            margin: 20px 0;
+            color: #666;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🏠</div>
+        <h1>Casa IoT</h1>
+        <p class="subtitle">Sistema de Automação Residencial</p>
+        
+        <div class="version">
+            Django 5.2.5 • Python 3.13 • PostgreSQL
+        </div>
+        
+        <div class="links-grid">
+            <a href="/admin/" class="link-card admin">
+                <span class="icon">⚙️</span>
+                <div class="title">Admin</div>
+                <div class="description">Painel administrativo do sistema</div>
+            </a>
+            
+            <a href="/api/swagger/" class="link-card api">
+                <span class="icon">📚</span>
+                <div class="title">Swagger UI</div>
+                <div class="description">Documentação interativa da API</div>
+            </a>
+            
+            <a href="/api/schema/" class="link-card docs">
+                <span class="icon">📋</span>
+                <div class="title">Schema</div>
+                <div class="description">Esquema OpenAPI da API</div>
+            </a>
+        </div>
+        
+        <div class="footer">
+            <p>Backend desenvolvido com Django REST Framework</p>
+            <p>Sistema de autenticação por Token • PostgreSQL (Supabase)</p>
+        </div>
+    </div>
+</body>
+</html>
