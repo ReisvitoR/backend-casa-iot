@@ -29,7 +29,6 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
     "http://127.0.0.1:5173",
     "http://127.0.0.1:8080",
-    # Adicione aqui as URLs do seu frontend em produção:
     # "https://meuapp.netlify.app",
     # "https://meuapp.vercel.app",
 ]
@@ -49,7 +48,7 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
 ]
 
-# Database - usar a mesma configuração do Supabase
+# Database 
 DATABASES = {
     'default': env.db(),
 }
@@ -65,11 +64,6 @@ X_FRAME_OPTIONS = 'DENY'
 SECURE_HSTS_SECONDS = 31536000
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
-
-# Se usar HTTPS
-# SECURE_SSL_REDIRECT = True
-# SESSION_COOKIE_SECURE = True
-# CSRF_COOKIE_SECURE = True
 
 # Logging
 LOGGING = {
