@@ -1,7 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.html import format_html
-from django.db import models
 from core.models import *
 
 @admin.register(Usuario)
@@ -14,44 +13,15 @@ class UsuarioAdmin(UserAdmin):
 
 @admin.register(Casa)
 class CasaAdmin(admin.ModelAdmin):
-    list_display = ['nome', 'usuario', 'total_comodos', 'total_dispositivos']
+    list_display = ['nome', 'usuario']
     list_filter = ['usuario']
     search_fields = ['nome', 'usuario__first_name', 'usuario__last_name']
-    list_select_related = ['usuario']  # Otimização de query
-    list_per_page = 20
-    
-    def get_queryset(self, request):
-        # Otimiza queries com prefetch_related
-        return super().get_queryset(request).select_related('usuario').prefetch_related('comodos__dispositivos')
-    
-    def total_comodos(self, obj):
-        # Use contagem em cache
-        return getattr(obj, '_comodos_count', obj.comodos.count())
-    total_comodos.short_description = 'Cômodos'
-    
-    def total_dispositivos(self, obj):
-        # Use contagem em cache quando possível
-        if hasattr(obj, '_dispositivos_count'):
-            return obj._dispositivos_count
-        return sum(comodo.dispositivos.count() for comodo in obj.comodos.all())
-    total_dispositivos.short_description = 'Dispositivos'
 
 @admin.register(TipoDispositivo)
 class TipoDispositivoAdmin(admin.ModelAdmin):
-    list_display = ['nome', 'categoria', 'total_dispositivos']
+    list_display = ['nome', 'categoria']
     list_filter = ['categoria']
     search_fields = ['nome']
-    list_per_page = 20
-    
-    def get_queryset(self, request):
-        # Adiciona contagem de dispositivos na query
-        return super().get_queryset(request).annotate(
-            _dispositivos_count=models.Count('dispositivos')
-        )
-    
-    def total_dispositivos(self, obj):
-        return obj._dispositivos_count
-    total_dispositivos.short_description = 'Qtd. Dispositivos'
 
 @admin.register(Comodo)
 class ComodoAdmin(admin.ModelAdmin):
@@ -122,34 +92,12 @@ class DispositivoAdmin(admin.ModelAdmin):
 
 @admin.register(Cena)
 class CenaAdmin(admin.ModelAdmin):
-    list_display = ['nome', 'casa', 'ativa_badge', 'favorita_badge', 'total_acoes']
+    list_display = ['nome', 'casa', 'ativa', 'favorita']
     list_filter = ['casa', 'ativa', 'favorita']
-    search_fields = ['nome', 'descricao', 'casa__nome']
-    list_select_related = ['casa']
-    list_per_page = 20
+    search_fields = ['nome', 'descricao']
     
-    # Campos para o formulário de criação/edição
-    fields = ['nome', 'casa', 'descricao', 'ativa', 'favorita', 'indisponivel_ate', 'tempo_execucao']
-    
-    def get_queryset(self, request):
-        return super().get_queryset(request).select_related('casa')
-    
-    def total_acoes(self, obj):
-        # Método mais simples para evitar conflitos
-        return obj.acoes.count()
-    total_acoes.short_description = 'Ações'
-    
-    def ativa_badge(self, obj):
-        color = "green" if obj.ativa else "gray"
-        text = "SIM" if obj.ativa else "NÃO"
-        return format_html(f'<span style="color: {color}; font-weight: bold;">{text}</span>')
-    ativa_badge.short_description = 'Ativa'
-    
-    def favorita_badge(self, obj):
-        if obj.favorita:
-            return format_html('<i class="fas fa-star" style="color: gold;"></i>')
-        return ""
-    favorita_badge.short_description = 'Fav'
+    # Formulário simplificado
+    fields = ['nome', 'casa', 'descricao', 'ativa', 'favorita']
 
 @admin.register(AcaoCena)
 class AcaoCenaAdmin(admin.ModelAdmin):
