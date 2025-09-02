@@ -45,6 +45,7 @@ class ComodoAdmin(admin.ModelAdmin):
     list_display = ['nome', 'get_casa']
     list_filter = ['casa']
     search_fields = ['nome']
+    fields = ['nome', 'casa', 'background_url']
     
     def get_casa(self, obj):
         try:
@@ -58,12 +59,21 @@ class ComodoAdmin(admin.ModelAdmin):
             return super().get_queryset(request).select_related('casa')
         except Exception:
             return Comodo.objects.none()
+    
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "casa":
+            try:
+                kwargs["queryset"] = Casa.objects.select_related('usuario').all()
+            except Exception:
+                kwargs["queryset"] = Casa.objects.none()
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 @admin.register(Dispositivo)
 class DispositivoAdmin(admin.ModelAdmin):
     list_display = ['nome', 'get_tipo', 'get_comodo', 'estado', 'ativo']
     list_filter = ['tipo', 'estado', 'ativo']
     search_fields = ['nome']
+    fields = ['nome', 'tipo', 'comodo', 'estado', 'ativo', 'potencia', 'marca', 'modelo', 'ip_address', 'mac_address']
     
     def get_tipo(self, obj):
         try:
@@ -84,6 +94,19 @@ class DispositivoAdmin(admin.ModelAdmin):
             return super().get_queryset(request).select_related('tipo', 'comodo')
         except Exception:
             return Dispositivo.objects.none()
+    
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "comodo":
+            try:
+                kwargs["queryset"] = Comodo.objects.select_related('casa').all()
+            except Exception:
+                kwargs["queryset"] = Comodo.objects.none()
+        elif db_field.name == "tipo":
+            try:
+                kwargs["queryset"] = TipoDispositivo.objects.all()
+            except Exception:
+                kwargs["queryset"] = TipoDispositivo.objects.none()
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 @admin.register(Cena)
 class CenaAdmin(admin.ModelAdmin):
