@@ -71,13 +71,13 @@ class CasaViewSet(viewsets.ModelViewSet):
                     'id': comodo.id,
                     'nome': comodo.nome,
                     'total_dispositivos': dispositivos.count(),
-                    'dispositivos_ligados': dispositivos.filter(estado='ligado').count(),
+                    'dispositivos_ligados': dispositivos.filter(estado=True).count(),
                     'dispositivos_ativos': dispositivos.filter(ativo=True).count(),
                     'dispositivos': [
                         {
                             'id': d.id,
                             'nome': d.nome,
-                            'estado': d.estado,
+                            'estado': 'ligado' if d.estado else 'desligado',
                             'ativo': d.ativo,
                             'tipo': d.tipo.nome if d.tipo else None
                         } for d in dispositivos
@@ -125,10 +125,9 @@ class ComodoViewSet(viewsets.ModelViewSet):
     filterset_fields = ["casa"]
     
     def get_queryset(self):
-        # Para testes: retorna todos os cômodos
+        
         return Comodo.objects.all()
-        # Usuários só veem cômodos de suas casas
-        # return Comodo.objects.filter(casa__usuario=self.request.user)
+   
     
     @action(detail=True, methods=['post'])
     def toggle_all(self, request, pk=None):
@@ -285,11 +284,11 @@ class CenaViewSet(viewsets.ModelViewSet):
             if not dispositivo.ativo:
                 continue
             
-            # Verifica se é condicional
+            
             if acao.condicional and dispositivo.estado == acao.estado_desejado:
                 continue
             
-            # Registra log
+            
             LogDispositivo.objects.create(
                 dispositivo=dispositivo,
                 estado_anterior=dispositivo.estado,
