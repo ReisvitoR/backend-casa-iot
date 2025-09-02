@@ -3,7 +3,7 @@
 
 # Set production environment
 export RENDER=true
-export DJANGO_SETTINGS_MODULE=config-admin.settings_production
+export DJANGO_SETTINGS_MODULE=config-admin.settings_render
 
 # Install system dependencies
 apt-get update
@@ -14,9 +14,9 @@ pip install --upgrade pip
 pip install -r requirements.txt
 
 # Run database migrations
-python manage.py migrate --settings=config-admin.settings_production
+python manage.py migrate --settings=config-admin.settings_render
 
 # Collect static files
-python manage.py collectstatic --noinput --settings=config-admin.settings_production
+python manage.py collectstatic --noinput --settings=config-admin.settings_render
 
 echo "✅ Build completed successfully!"

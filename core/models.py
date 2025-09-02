@@ -11,7 +11,10 @@ class Usuario(AbstractUser):
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
     
     def __str__(self):
-        return f"{self.first_name} {self.last_name} ({self.email})"
+        try:
+            return f"{self.first_name} {self.last_name} ({self.email})"
+        except:
+            return f"Usuario {self.id}"
 
 class Casa(models.Model):
     nome = models.CharField(max_length=255)
@@ -25,7 +28,10 @@ class Casa(models.Model):
         ordering = ['nome']
 
     def __str__(self):
-        return f"{self.nome} - {self.usuario.first_name}"
+        try:
+            return f"{self.nome} - {self.usuario.first_name}"
+        except:
+            return f"Casa {self.nome}"
 
 class TipoDispositivo(models.Model):
     """Tipos de dispositivos disponíveis"""
@@ -60,7 +66,10 @@ class Comodo(models.Model):
         unique_together = ['casa', 'nome']  # Evita cômodos duplicados na mesma casa
 
     def __str__(self):
-        return f"{self.nome} - {self.casa.nome}"
+        try:
+            return f"{self.nome} - {self.casa.nome}"
+        except:
+            return f"Comodo {self.nome}"
 
 class Dispositivo(models.Model):
     nome = models.CharField(max_length=255)
@@ -82,7 +91,10 @@ class Dispositivo(models.Model):
         unique_together = ['comodo', 'nome']  # Evita dispositivos duplicados no mesmo cômodo
 
     def __str__(self):
-        return f"{self.nome} ({self.comodo.nome})"
+        try:
+            return f"{self.nome} ({self.comodo.nome})"
+        except:
+            return f"Dispositivo {self.nome}"
 
     @property
     def status_conexao(self):
@@ -156,7 +168,10 @@ class AcaoCena(models.Model):
         unique_together = ['cena', 'ordem']  # Evita ordem duplicada na mesma cena
 
     def __str__(self):
-        return f"Ação {self.ordem}: {self.dispositivo.nome} -> {'ON' if self.estado_desejado else 'OFF'}"
+        try:
+            return f"Ação {self.ordem}: {self.dispositivo.nome} -> {'ON' if self.estado_desejado else 'OFF'}"
+        except:
+            return f"Acao {self.ordem} - Cena {self.cena_id}"
 
 class LogDispositivo(models.Model):
     """Log de mudanças de estado dos dispositivos"""

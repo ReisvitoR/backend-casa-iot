@@ -13,7 +13,7 @@ from django.core.asgi import get_asgi_application
 
 # Use settings de produção se RENDER estiver definido
 if os.environ.get('RENDER'):
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config-admin.settings_production')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config-admin.settings_render')
 else:
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config-admin.settings')
 

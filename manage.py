@@ -8,7 +8,7 @@ def main():
     """Run administrative tasks."""
     # Automatically use production settings when on Render
     if 'RENDER' in os.environ:
-        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config-admin.settings_production')
+        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config-admin.settings_render')
     else:
         os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config-admin.settings')
     
