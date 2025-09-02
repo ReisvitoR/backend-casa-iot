@@ -60,58 +60,61 @@ class CasaViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['get'])
     def status(self, request, pk=None):
         """Status completo da casa com dispositivos e cenas"""
-        casa = self.get_object()
-        
-        # Dispositivos por cômodo
-        comodos_status = []
-        for comodo in casa.comodos.all():
-            dispositivos = comodo.dispositivos.all()
-            comodos_status.append({
-                'id': comodo.id,
-                'nome': comodo.nome,
-                'total_dispositivos': dispositivos.count(),
-                'dispositivos_ligados': dispositivos.filter(estado='ligado').count(),
-                'dispositivos_ativos': dispositivos.filter(ativo=True).count(),
-                'dispositivos': [
+        try:
+            casa = self.get_object()
+            
+            # Dispositivos por cômodo
+            comodos_status = []
+            for comodo in casa.comodos.all():
+                dispositivos = comodo.dispositivos.all()
+                comodos_status.append({
+                    'id': comodo.id,
+                    'nome': comodo.nome,
+                    'total_dispositivos': dispositivos.count(),
+                    'dispositivos_ligados': dispositivos.filter(estado='ligado').count(),
+                    'dispositivos_ativos': dispositivos.filter(ativo=True).count(),
+                    'dispositivos': [
+                        {
+                            'id': d.id,
+                            'nome': d.nome,
+                            'estado': d.estado,
+                            'ativo': d.ativo,
+                            'tipo': d.tipo.nome if d.tipo else None
+                        } for d in dispositivos
+                    ]
+                })
+            
+            # Cenas da casa
+            cenas = casa.cenas.all()
+            cenas_ativas = cenas.filter(ativa=True)
+            
+            return Response({
+                'casa': {
+                    'id': casa.id,
+                    'nome': casa.nome,
+                    'endereco': casa.endereco or ''
+                },
+                'resumo': {
+                    'total_comodos': casa.comodos.count(),
+                    'total_dispositivos': sum(c['total_dispositivos'] for c in comodos_status),
+                    'dispositivos_ligados': sum(c['dispositivos_ligados'] for c in comodos_status),
+                    'total_cenas': cenas.count(),
+                    'cenas_ativas': cenas_ativas.count()
+                },
+                'comodos': comodos_status,
+                'cenas': [
                     {
-                        'id': d.id,
-                        'nome': d.nome,
-                        'estado': d.estado,
-                        'ativo': d.ativo,
-                        'tipo': d.tipo.nome if d.tipo else None
-                    } for d in dispositivos
+                        'id': c.id,
+                        'nome': c.nome,
+                        'ativa': c.ativa,
+                        'favorita': c.favorita,
+                        'pode_executar': c.pode_executar,
+                        'status': c.status_disponibilidade
+                    } for c in cenas
                 ]
             })
-        
-        # Cenas da casa
-        cenas = casa.cenas.all()
-        cenas_ativas = cenas.filter(ativa=True)
-        
-        return Response({
-            'casa': {
-                'id': casa.id,
-                'nome': casa.nome,
-                'endereco': casa.endereco
-            },
-            'resumo': {
-                'total_comodos': casa.comodos.count(),
-                'total_dispositivos': sum(c['total_dispositivos'] for c in comodos_status),
-                'dispositivos_ligados': sum(c['dispositivos_ligados'] for c in comodos_status),
-                'total_cenas': cenas.count(),
-                'cenas_ativas': cenas_ativas.count()
-            },
-            'comodos': comodos_status,
-            'cenas': [
-                {
-                    'id': c.id,
-                    'nome': c.nome,
-                    'ativa': c.ativa,
-                    'favorita': c.favorita,
-                    'pode_executar': c.pode_executar,
-                    'status': c.status_disponibilidade
-                } for c in cenas
-            ]
-        })
+        except Exception as e:
+            return Response({'error': str(e)}, status=500)
 
 class ComodoViewSet(viewsets.ModelViewSet):
     """API para gerenciamento de cômodos"""
