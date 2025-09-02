@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.html import format_html
+from django.db import models
 from core.models import *
 
 @admin.register(Usuario)
@@ -9,18 +10,29 @@ class UsuarioAdmin(UserAdmin):
     list_filter = ['is_active', 'is_staff', 'date_joined']
     search_fields = ['email', 'first_name', 'last_name']
     ordering = ['-date_joined']
+    list_per_page = 25  # Paginação menor para carregar mais rápido
 
 @admin.register(Casa)
 class CasaAdmin(admin.ModelAdmin):
     list_display = ['nome', 'usuario', 'total_comodos', 'total_dispositivos']
     list_filter = ['usuario']
     search_fields = ['nome', 'usuario__first_name', 'usuario__last_name']
+    list_select_related = ['usuario']  # Otimização de query
+    list_per_page = 20
+    
+    def get_queryset(self, request):
+        # Otimiza queries com prefetch_related
+        return super().get_queryset(request).select_related('usuario').prefetch_related('comodos__dispositivos')
     
     def total_comodos(self, obj):
-        return obj.comodos.count()
+        # Use contagem em cache
+        return getattr(obj, '_comodos_count', obj.comodos.count())
     total_comodos.short_description = 'Cômodos'
     
     def total_dispositivos(self, obj):
+        # Use contagem em cache quando possível
+        if hasattr(obj, '_dispositivos_count'):
+            return obj._dispositivos_count
         return sum(comodo.dispositivos.count() for comodo in obj.comodos.all())
     total_dispositivos.short_description = 'Dispositivos'
 
@@ -29,9 +41,16 @@ class TipoDispositivoAdmin(admin.ModelAdmin):
     list_display = ['nome', 'categoria', 'total_dispositivos']
     list_filter = ['categoria']
     search_fields = ['nome']
+    list_per_page = 20
+    
+    def get_queryset(self, request):
+        # Adiciona contagem de dispositivos na query
+        return super().get_queryset(request).annotate(
+            _dispositivos_count=models.Count('dispositivos')
+        )
     
     def total_dispositivos(self, obj):
-        return obj.dispositivos.count()
+        return obj._dispositivos_count
     total_dispositivos.short_description = 'Qtd. Dispositivos'
 
 @admin.register(Comodo)
@@ -39,6 +58,11 @@ class ComodoAdmin(admin.ModelAdmin):
     list_display = ['nome', 'casa', 'total_dispositivos', 'dispositivos_online']
     list_filter = ['casa']
     search_fields = ['nome', 'casa__nome']
+    list_select_related = ['casa']
+    list_per_page = 20
+    
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('casa').prefetch_related('dispositivos')
     
     def total_dispositivos(self, obj):
         return obj.dispositivos.count()
@@ -55,10 +79,14 @@ class ComodoAdmin(admin.ModelAdmin):
 
 @admin.register(Dispositivo)
 class DispositivoAdmin(admin.ModelAdmin):
-    list_display = ['nome', 'tipo', 'comodo', 'estado_badge', 'status_conexao_badge', 'potencia', 'ultimo_ping']
+    list_display = ['nome', 'tipo', 'comodo', 'estado_badge', 'status_conexao_badge']
     list_filter = ['tipo', 'estado', 'ativo', 'comodo__casa', 'comodo']
-    search_fields = ['nome', 'marca', 'modelo', 'ip_address']
+    search_fields = ['nome', 'marca', 'modelo']
     readonly_fields = ['status_conexao']
+    list_select_related = ['tipo', 'comodo', 'comodo__casa']  # Otimização
+    list_per_page = 25
+    
+    # Remover campos pesados dos list_display para melhor performance
     fieldsets = (
         ('Informações Básicas', {
             'fields': ('nome', 'tipo', 'comodo', 'estado', 'ativo')
@@ -70,6 +98,9 @@ class DispositivoAdmin(admin.ModelAdmin):
             'fields': ('ip_address', 'mac_address', 'ultimo_ping', 'status_conexao')
         }),
     )
+    
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('tipo', 'comodo', 'comodo__casa')
     
     def estado_badge(self, obj):
         color = "green" if obj.estado else "red"
@@ -91,11 +122,20 @@ class DispositivoAdmin(admin.ModelAdmin):
 
 @admin.register(Cena)
 class CenaAdmin(admin.ModelAdmin):
-    list_display = ['nome', 'casa', 'total_acoes', 'ativa_badge', 'favorita_badge']
+    list_display = ['nome', 'casa', 'ativa_badge', 'favorita_badge', 'total_acoes']
     list_filter = ['casa', 'ativa', 'favorita']
     search_fields = ['nome', 'descricao', 'casa__nome']
+    list_select_related = ['casa']
+    list_per_page = 20
+    
+    # Campos para o formulário de criação/edição
+    fields = ['nome', 'casa', 'descricao', 'ativa', 'favorita', 'indisponivel_ate', 'tempo_execucao']
+    
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('casa')
     
     def total_acoes(self, obj):
+        # Método mais simples para evitar conflitos
         return obj.acoes.count()
     total_acoes.short_description = 'Ações'
     
@@ -113,30 +153,36 @@ class CenaAdmin(admin.ModelAdmin):
 
 @admin.register(AcaoCena)
 class AcaoCenaAdmin(admin.ModelAdmin):
-    list_display = ['cena', 'ordem', 'dispositivo', 'estado_desejado_badge', 'intervalo_tempo', 'condicional_badge']
-    list_filter = ['cena__casa', 'cena', 'estado_desejado', 'condicional']
+    list_display = ['cena', 'ordem', 'dispositivo', 'estado_desejado_badge']
+    list_filter = ['cena__casa', 'cena', 'estado_desejado']
     search_fields = ['cena__nome', 'dispositivo__nome']
     ordering = ['cena', 'ordem']
+    list_select_related = ['cena', 'dispositivo', 'cena__casa']
+    list_per_page = 30
+    
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('cena', 'dispositivo', 'cena__casa')
     
     def estado_desejado_badge(self, obj):
         color = "green" if obj.estado_desejado else "red"
         text = "LIGAR" if obj.estado_desejado else "DESLIGAR"
         return format_html(f'<span style="color: {color}; font-weight: bold;">{text}</span>')
     estado_desejado_badge.short_description = 'Ação'
-    
-    def condicional_badge(self, obj):
-        color = "orange" if obj.condicional else "blue"
-        text = "CONDICIONAL" if obj.condicional else "SEMPRE"
-        return format_html(f'<span style="color: {color}; font-weight: bold;">{text}</span>')
-    condicional_badge.short_description = 'Tipo'
 
 @admin.register(LogDispositivo)
 class LogDispositivoAdmin(admin.ModelAdmin):
-    list_display = ['timestamp', 'dispositivo', 'mudanca_estado_badge', 'origem_badge', 'usuario', 'cena']
+    list_display = ['timestamp', 'dispositivo', 'mudanca_estado_badge', 'origem_badge']
     list_filter = ['origem', 'timestamp', 'dispositivo__comodo__casa']
-    search_fields = ['dispositivo__nome', 'usuario__first_name', 'cena__nome']
+    search_fields = ['dispositivo__nome']
     readonly_fields = ['timestamp']
     date_hierarchy = 'timestamp'
+    list_select_related = ['dispositivo', 'dispositivo__comodo', 'dispositivo__comodo__casa']
+    list_per_page = 50  # Logs podem ter mais itens por página
+    
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related(
+            'dispositivo', 'dispositivo__comodo', 'dispositivo__comodo__casa'
+        ).order_by('-timestamp')
     
     def mudanca_estado_badge(self, obj):
         anterior = '<i class="fas fa-circle" style="color: green;"></i>' if obj.estado_anterior else '<i class="fas fa-circle" style="color: red;"></i>'

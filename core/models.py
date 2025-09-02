@@ -116,7 +116,10 @@ class Cena(models.Model):
         unique_together = ['casa', 'nome']  # Evita cenas duplicadas na mesma casa
 
     def __str__(self):
-        return f"{self.nome} - {self.casa.nome}"
+        try:
+            return f"{self.nome} - {self.casa.nome}"
+        except:
+            return f"{self.nome} - Casa #{self.casa_id}"
 
     @property
     def pode_executar(self):
