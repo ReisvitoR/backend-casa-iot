@@ -238,6 +238,20 @@ class DispositivoViewSet(viewsets.ModelViewSet):
                 ligados=Count('id', filter=Q(estado=True, ativo=True))
             )
         })
+    
+    @action(detail=False, methods=['get'])
+    def ativos(self, request):
+        """Lista apenas dispositivos ativos"""
+        dispositivos_ativos = self.get_queryset().filter(ativo=True)
+        serializer = self.get_serializer(dispositivos_ativos, many=True)
+        return Response(serializer.data)
+    
+    @action(detail=False, methods=['get'])
+    def inativos(self, request):
+        """Lista apenas dispositivos inativos"""
+        dispositivos_inativos = self.get_queryset().filter(ativo=False)
+        serializer = self.get_serializer(dispositivos_inativos, many=True)
+        return Response(serializer.data)
 
 class CenaViewSet(viewsets.ModelViewSet):
     """API para gerenciamento de cenas"""
@@ -393,6 +407,28 @@ class CenaViewSet(viewsets.ModelViewSet):
                 'temporariamente_indisponivel': len([c for c in cenas if c.status_disponibilidade == 'temporariamente_indisponivel'])
             }
         })
+    
+    @action(detail=False, methods=['get'])
+    def ativas(self, request):
+        """Lista apenas cenas ativas"""
+        cenas_ativas = self.get_queryset().filter(ativa=True)
+        serializer = self.get_serializer(cenas_ativas, many=True)
+        return Response(serializer.data)
+    
+    @action(detail=False, methods=['get'])
+    def favoritas(self, request):
+        """Lista apenas cenas favoritas"""
+        cenas_favoritas = self.get_queryset().filter(favorita=True)
+        serializer = self.get_serializer(cenas_favoritas, many=True)
+        return Response(serializer.data)
+    
+    @action(detail=False, methods=['get'])
+    def disponiveis(self, request):
+        """Lista apenas cenas disponíveis para execução"""
+        cenas = self.get_queryset()
+        cenas_disponiveis = [cena for cena in cenas if cena.pode_executar]
+        serializer = self.get_serializer(cenas_disponiveis, many=True)
+        return Response(serializer.data)
 
 class AcaoCenaViewSet(viewsets.ModelViewSet):
     """API para gerenciamento de ações de cenas"""
