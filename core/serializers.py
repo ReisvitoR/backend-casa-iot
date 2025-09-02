@@ -4,11 +4,31 @@ from .models import *
 
 class UsuarioSerializer(serializers.ModelSerializer):
     total_casas = serializers.SerializerMethodField()
+    password = serializers.CharField(write_only=True)
     
     class Meta:
         model = Usuario
-        fields = ['id', 'email', 'first_name', 'last_name', 'total_casas', 'date_joined']
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'password', 'total_casas', 'date_joined']
         read_only_fields = ['date_joined']
+        extra_kwargs = {
+            'password': {'write_only': True}
+        }
+    
+    def create(self, validated_data):
+        password = validated_data.pop('password')
+        user = Usuario.objects.create_user(**validated_data)
+        user.set_password(password)
+        user.save()
+        return user
+    
+    def update(self, instance, validated_data):
+        password = validated_data.pop('password', None)
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        if password:
+            instance.set_password(password)
+        instance.save()
+        return instance
     
     def get_total_casas(self, obj):
         return obj.casas.count()
