@@ -138,13 +138,13 @@ class ComodoViewSet(viewsets.ModelViewSet):
         dispositivos_alterados = []
         for dispositivo in comodo.dispositivos.filter(ativo=True):
             if dispositivo.estado != estado:
-                # Registra log
+                # Registra log (sem usuário, já que não há autenticação)
                 LogDispositivo.objects.create(
                     dispositivo=dispositivo,
                     estado_anterior=dispositivo.estado,
                     estado_novo=estado,
                     origem='api',
-                    usuario=request.user
+                    usuario=None  # Sem autenticação
                 )
                 dispositivo.estado = estado
                 dispositivo.save()
@@ -193,13 +193,13 @@ class DispositivoViewSet(viewsets.ModelViewSet):
         dispositivo.ultimo_ping = timezone.now()
         dispositivo.save()
         
-        # Registra log
+        # Registra log (sem usuário, já que não há autenticação)
         LogDispositivo.objects.create(
             dispositivo=dispositivo,
             estado_anterior=estado_anterior,
             estado_novo=dispositivo.estado,
             origem='api',
-            usuario=request.user
+            usuario=None  # Sem autenticação
         )
         
         return Response({
@@ -289,12 +289,13 @@ class CenaViewSet(viewsets.ModelViewSet):
                 continue
             
             
+            # Registra log (sem usuário, já que não há autenticação)
             LogDispositivo.objects.create(
                 dispositivo=dispositivo,
                 estado_anterior=dispositivo.estado,
                 estado_novo=acao.estado_desejado,
                 origem='cena',
-                usuario=request.user,
+                usuario=None,  # Sem autenticação
                 cena=cena
             )
             
