@@ -11,6 +11,10 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config-admin.settings')
+# Use settings de produção se RENDER estiver definido
+if os.environ.get('RENDER'):
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config-admin.settings_production')
+else:
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config-admin.settings')
 
 application = get_asgi_application()

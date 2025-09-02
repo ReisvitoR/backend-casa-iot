@@ -21,21 +21,29 @@ ALLOWED_HOSTS = [
     # 'seu-app.railway.app',
 ]
 
-# CORS para permitir frontend consumir a API
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # React/Next.js local
-    "http://localhost:5173",  # Vite local
-    "http://localhost:8080",  # Vue local
-    "http://127.0.0.1:3000",
-    "http://127.0.0.1:5173",
-    "http://127.0.0.1:8080",
-    # "https://meuapp.netlify.app",
-    # "https://meuapp.vercel.app",
-]
+# Desabilitar cache problemático em produção
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    }
+}
 
+# Session simples para produção
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+
+# CORS configuração completa para produção
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
-# Headers permitidos
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+
 CORS_ALLOW_HEADERS = [
     'accept',
     'accept-encoding',
@@ -46,6 +54,13 @@ CORS_ALLOW_HEADERS = [
     'user-agent',
     'x-csrftoken',
     'x-requested-with',
+]
+
+# CSRF trusted origins
+CSRF_TRUSTED_ORIGINS = [
+    'https://backend-casa-iot.onrender.com',
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
 ]
 
 # Database 
