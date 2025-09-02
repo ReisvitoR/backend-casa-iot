@@ -1,8 +1,6 @@
-from rest_framework import viewsets, status, permissions
+from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.authtoken.models import Token
 from django.utils import timezone
 from django.db.models import Count, Q
 from django_filters.rest_framework import DjangoFilterBackend
@@ -15,58 +13,63 @@ def index(request):
     """Página inicial do sistema"""
     return render(request, 'core/index.html')
 
-class CustomAuthToken(ObtainAuthToken):
-    """Autenticação customizada que retorna informações do usuário"""
-    def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data,
-                                          context={'request': request})
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        token, created = Token.objects.get_or_create(user=user)
-        return Response({
-            'token': token.key,
-            'user': UsuarioSerializer(user).data
-        })
-
 class UsuarioViewSet(viewsets.ModelViewSet):
     """API para gerenciamento de usuários"""
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    # Autenticação removida - acesso livre
     
     @action(detail=False, methods=['get'])
     def me(self, request):
-        """Retorna dados do usuário logado"""
-        serializer = UsuarioSerializer(request.user)
-        return Response(serializer.data)
+        """Retorna dados do primeiro usuário (sem autenticação)"""
+        primeiro_usuario = Usuario.objects.first()
+        if primeiro_usuario:
+            serializer = UsuarioSerializer(primeiro_usuario)
+            return Response(serializer.data)
+        return Response({'error': 'Nenhum usuário encontrado'}, status=404)
 
 class CasaViewSet(viewsets.ModelViewSet):
     """API para gerenciamento de casas"""
     queryset = Casa.objects.all()
     serializer_class = CasaSerializer
-    permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["usuario"]
     
     def get_queryset(self):
-        # Usuários só veem suas próprias casas
-        return Casa.objects.filter(usuario=self.request.user)
+        # Filtra por usuário se especificado na query
+        queryset = Casa.objects.all()
+        usuario_id = self.request.query_params.get('usuario', None)
+        if usuario_id:
+            queryset = queryset.filter(usuario_id=usuario_id)
+        return queryset
     
     def perform_create(self, serializer):
-        # Associa automaticamente ao usuário logado
-        serializer.save(usuario=self.request.user)
+        # Sem autenticação: associa ao primeiro usuário ou cria um padrão
+        from .models import Usuario
+        primeiro_usuario = Usuario.objects.first()
+        if not primeiro_usuario:
+            # Cria um usuário padrão se não existir nenhum
+            primeiro_usuario = Usuario.objects.create_user(
+                username='usuario_padrao',
+                email='padrao@casaiot.com',
+                first_name='Usuário',
+                last_name='Padrão'
+            )
+        serializer.save(usuario=primeiro_usuario)
 
 class ComodoViewSet(viewsets.ModelViewSet):
     """API para gerenciamento de cômodos"""
     queryset = Comodo.objects.all()
     serializer_class = ComodoSerializer
-    permission_classes = [permissions.IsAuthenticated]
+
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["casa"]
     
     def get_queryset(self):
+        # Para testes: retorna todos os cômodos
+        return Comodo.objects.all()
         # Usuários só veem cômodos de suas casas
-        return Comodo.objects.filter(casa__usuario=self.request.user)
+        # return Comodo.objects.filter(casa__usuario=self.request.user)
     
     @action(detail=True, methods=['post'])
     def toggle_all(self, request, pk=None):
@@ -99,7 +102,6 @@ class TipoDispositivoViewSet(viewsets.ModelViewSet):
     """API para tipos de dispositivos"""
     queryset = TipoDispositivo.objects.all()
     serializer_class = TipoDispositivoSerializer
-    permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["categoria"]
 
@@ -107,13 +109,16 @@ class DispositivoViewSet(viewsets.ModelViewSet):
     """API para gerenciamento de dispositivos"""
     queryset = Dispositivo.objects.all()
     serializer_class = DispositivoSerializer
-    permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["comodo", "tipo", "estado", "ativo"]
     
     def get_queryset(self):
-        # Usuários só veem dispositivos de suas casas
-        return Dispositivo.objects.filter(comodo__casa__usuario=self.request.user)
+        # Filtra dispositivos por usuário se especificado
+        queryset = Dispositivo.objects.all()
+        usuario_id = self.request.query_params.get('usuario', None)
+        if usuario_id:
+            queryset = queryset.filter(comodo__casa__usuario_id=usuario_id)
+        return queryset
     
     @action(detail=True, methods=['post'])
     def toggle(self, request, pk=None):
@@ -180,13 +185,16 @@ class CenaViewSet(viewsets.ModelViewSet):
     """API para gerenciamento de cenas"""
     queryset = Cena.objects.all()
     serializer_class = CenaSerializer
-    permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["casa", "ativa", "favorita"]
     
     def get_queryset(self):
-        # Usuários só veem cenas de suas casas
-        return Cena.objects.filter(casa__usuario=self.request.user)
+        # Filtra cenas por usuário se especificado
+        queryset = Cena.objects.all()
+        usuario_id = self.request.query_params.get('usuario', None)
+        if usuario_id:
+            queryset = queryset.filter(casa__usuario_id=usuario_id)
+        return queryset
     
     @action(detail=True, methods=['post'])
     def executar(self, request, pk=None):
@@ -331,24 +339,28 @@ class AcaoCenaViewSet(viewsets.ModelViewSet):
     """API para gerenciamento de ações de cenas"""
     queryset = AcaoCena.objects.all()
     serializer_class = AcaoCenaSerializer
-    permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["cena", "dispositivo"]
     
     def get_queryset(self):
-        # Usuários só veem ações de cenas de suas casas
-        return AcaoCena.objects.filter(cena__casa__usuario=self.request.user)
+        # Filtra ações por usuário se especificado
+        queryset = AcaoCena.objects.all()
+        usuario_id = self.request.query_params.get('usuario', None)
+        if usuario_id:
+            queryset = queryset.filter(cena__casa__usuario_id=usuario_id)
+        return queryset
 
 class LogDispositivoViewSet(viewsets.ReadOnlyModelViewSet):
     """API para visualização de logs (somente leitura)"""
     queryset = LogDispositivo.objects.all()
     serializer_class = LogDispositivoSerializer
-    permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["dispositivo", "origem", "usuario", "cena"]
     
     def get_queryset(self):
-        # Usuários só veem logs de suas casas
-        return LogDispositivo.objects.filter(
-            dispositivo__comodo__casa__usuario=self.request.user
-        )
+        # Filtra logs por usuário se especificado
+        queryset = LogDispositivo.objects.all()
+        usuario_id = self.request.query_params.get('usuario', None)
+        if usuario_id:
+            queryset = queryset.filter(dispositivo__comodo__casa__usuario_id=usuario_id)
+        return queryset

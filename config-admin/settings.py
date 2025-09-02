@@ -65,9 +65,6 @@ JAZZMIN_SETTINGS = {
         "core.cena": "fas fa-play-circle",
         "core.acaocena": "fas fa-cogs",
         "core.logdispositivo": "fas fa-clipboard-list",
-        
-        "authtoken": "fas fa-key",
-        "authtoken.Token": "fas fa-key",
     },
     
     # Configuração do menu
@@ -88,7 +85,7 @@ JAZZMIN_SETTINGS = {
     "navigation_expanded": True,
     "hide_apps": [],
     "hide_models": [],
-    "order_with_respect_to": ["core", "auth", "authtoken"],
+    "order_with_respect_to": ["core", "auth"],
     
     # Customização do rodapé
     "custom_links": {
@@ -115,7 +112,7 @@ ALLOWED_HOSTS = [
     'localhost', 
     '127.0.0.1', 
     'backend-casa-iot.onrender.com',
-    '.onrender.com',  # Apenas subdomínios do Render
+    '.onrender.com',  
 ]
 
 
@@ -125,7 +122,6 @@ INSTALLED_APPS = [
     'jazzmin',
     'corsheaders',
     'rest_framework',
-    'rest_framework.authtoken',
     'django_filters',
     'core',
     'drf_spectacular',
@@ -163,17 +159,13 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_ALL_ORIGINS = DEBUG  # Apenas em desenvolvimento
+CORS_ALLOW_ALL_ORIGINS = DEBUG  
 
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-    ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticatedOrReadOnly',  # Leitura livre, escrita com auth
+        'rest_framework.permissions.AllowAny',  # 🔓 Acesso livre para todos
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 20

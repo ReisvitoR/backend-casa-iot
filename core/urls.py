@@ -1,7 +1,7 @@
 from rest_framework import routers
 from core.views import (
     UsuarioViewSet, ComodoViewSet, DispositivoViewSet, CenaViewSet, 
-    AcaoCenaViewSet, CasaViewSet, TipoDispositivoViewSet, LogDispositivoViewSet, CustomAuthToken, index
+    AcaoCenaViewSet, CasaViewSet, TipoDispositivoViewSet, LogDispositivoViewSet, index
 )
 from django.urls import path, include
 
@@ -16,6 +16,5 @@ router.register(r'acoes-cena', AcaoCenaViewSet)
 router.register(r'logs', LogDispositivoViewSet)
 
 urlpatterns = [
-    path('auth/login/', CustomAuthToken.as_view(), name='api_token_auth'),
     path('', include(router.urls)),
 ]
