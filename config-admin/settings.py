@@ -254,24 +254,12 @@ CACHES = {
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 SESSION_CACHE_ALIAS = 'default'
 
-# Admin Performance Settings
-ADMIN_PAGINATION_DEFAULT_PAGE_SIZE = 25
-ADMIN_MAX_SHOW_ALL_ALLOWED = 100
-
 # Database Performance
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Performance Optimizations
-DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880  # 5MB
-FILE_UPLOAD_MAX_MEMORY_SIZE = 5242880  # 5MB
-
-# Connection Pool Settings para PostgreSQL
+# Connection Pool Settings para PostgreSQL - configuração simplificada
 if 'postgresql' in DATABASES['default']['ENGINE']:
     DATABASES['default']['CONN_MAX_AGE'] = 60  # 60 segundos de pool de conexão
-    DATABASES['default']['OPTIONS'] = {
-        'MAX_CONNS': 20,
-        'connect_timeout': 10,
-    }
 
 
 # Password validation
