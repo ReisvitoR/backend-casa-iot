@@ -6,9 +6,13 @@ Uma API completa para gerenciar dispositivos IoT em ambientes residenciais, perm
 
 ## 🚀 Demonstração
 
-**API Live:** https://backend-casa-iot.onrender.com/api/  
+**API Live:** https://backend-casa-iot.onrender.com/api/  <- ABRA
 **Documentação Swagger:** https://backend-casa-iot.onrender.com/swagger/  
 **Painel Admin:** https://backend-casa-iot.onrender.com/admin/
+
+-- PARA UTILIZAR O ADMIN: LOGIN= django01@exemplo.com
+SENHA= senha123
+
 
 ## ✨ Funcionalidades
 
